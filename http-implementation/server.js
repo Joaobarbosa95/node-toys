@@ -1,5 +1,6 @@
 const net = require("net")
 
+
 const PORT = 3000
 
 const server = net.createServer()
@@ -21,20 +22,27 @@ server.on("error", (e) => {
     }
 })
 
-const response = `HTTP/1.1 200 OK
-Date: Sat, 09 Oct 2010 14:28:02 GMT
-Server: Apache
-Last-Modified: Tue, 01 Dec 2009 20:18:22 GMT
-Accept-Ranges: bytes
-Content-Length: 68 
-Content-Type: text/html
-
-<!DOCTYPE html>
+const content = `<!DOCTYPE html>
 <html>
 <head></head>
 <body><h1>HELLO</h1></body>
-</html>
-`
+</html>`
+
+const response = function template({
+    code, msg, server, content 
+}) {
+    return `HTTP/1.1 ${code} ${msg} 
+        Date: Sat, 09 Oct 2010 14:28:02 GMT
+        Server: ${server} 
+        Last-Modified: Tue, 01 Dec 2009 20:18:22 GMT
+        Accept-Ranges: bytes
+        Content-Length: ${content.length} 
+        Content-Type: text/html
+
+        ${content}
+    `
+}
+
 
 server.on("connection", (socket) => {
     console.log("Connected")
@@ -43,8 +51,9 @@ server.on("connection", (socket) => {
     //socket.write("HELLO")
 
     socket.on("data", (data) => {
-        socket.write(response)
+        //socket.write(response)
         console.log(data.toString())
+                   
     })
 
 })
